@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "640427324401",
+    "project_id": "teachercoursereview",
+    "storage_bucket": "teachercoursereview.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640427324401:android:1f4351bd817b4188d8ca50",
+        "android_client_info": {
+          "package_name": "com.example.teachercoursereview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640427324401-3mkrildtbjqj8e6ic36r39fpluhsm76b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.teachercoursereview",
+            "certificate_hash": "d3b849cfa8a9c0418e1aeaf0e7764520fc6be501"
+          }
+        },
+        {
+          "client_id": "640427324401-p85rk9cph2jbhq1e31beeq2rgu86aqa2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoW-gbitICVVYoQpsKbWhTxksjKF-BSr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640427324401-p85rk9cph2jbhq1e31beeq2rgu86aqa2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
