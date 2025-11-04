@@ -1,0 +1,59 @@
+Index: .idea/appInsightsSettings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AppInsightsSettings\">\r\n    <option name=\"selectedTabId\" value=\"Firebase Crashlytics\" />\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/appInsightsSettings.xml b/.idea/appInsightsSettings.xml
+--- a/.idea/appInsightsSettings.xml	(revision 999f474439c49e6b859db4b777874970507d2fc7)
++++ b/.idea/appInsightsSettings.xml	(date 1762182028648)
+@@ -2,5 +2,26 @@
+ <project version="4">
+   <component name="AppInsightsSettings">
+     <option name="selectedTabId" value="Firebase Crashlytics" />
++    <option name="tabSettings">
++      <map>
++        <entry key="Firebase Crashlytics">
++          <value>
++            <InsightsFilterSettings>
++              <option name="connection">
++                <ConnectionSetting>
++                  <option name="appId" value="com.example.teachercoursereview" />
++                  <option name="mobileSdkAppId" value="1:640427324401:android:1f4351bd817b4188d8ca50" />
++                  <option name="projectId" value="teachercoursereview" />
++                  <option name="projectNumber" value="640427324401" />
++                </ConnectionSetting>
++              </option>
++              <option name="signal" value="SIGNAL_UNSPECIFIED" />
++              <option name="timeIntervalDays" value="THIRTY_DAYS" />
++              <option name="visibilityType" value="ALL" />
++            </InsightsFilterSettings>
++          </value>
++        </entry>
++      </map>
++    </option>
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision 999f474439c49e6b859db4b777874970507d2fc7)
++++ b/.idea/deploymentTargetSelector.xml	(date 1762185713274)
+@@ -4,6 +4,14 @@
+     <selectionStates>
+       <SelectionState runConfigName="app">
+         <option name="selectionMode" value="DROPDOWN" />
++        <DropdownSelection timestamp="2025-11-03T15:59:55.823214200Z">
++          <Target type="DEFAULT_BOOT">
++            <template>
++              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=tokay/36" />
++            </template>
++          </Target>
++        </DropdownSelection>
++        <DialogSelection />
+       </SelectionState>
+     </selectionStates>
+   </component>

@@ -1,0 +1,1227 @@
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\nbuildscript {\r\n    repositories {\r\n        google()\r\n        mavenCentral()\r\n    }\r\n    dependencies {\r\n        classpath 'com.android.tools.build:gradle:7.4.2'\r\n        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10'\r\n        classpath 'com.google.gms:google-services:4.3.15'\r\n    }\r\n}\r\n\r\nallprojects {\r\n    repositories {\r\n        google()\r\n        mavenCentral()\r\n    }\r\n}\r\n\r\ntask clean(type: Delete) {\r\n    delete rootProject.buildDir\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision 999f474439c49e6b859db4b777874970507d2fc7)
++++ b/build.gradle	(date 1759656297996)
+@@ -1,4 +1,3 @@
+-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+ buildscript {
+     repositories {
+         google()
+Index: app/src/main/java/com/example/teachercoursereview/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.teachercoursereview\r\n\r\nimport android.content.Intent\r\nimport android.os.Bundle\r\nimport android.widget.Button\r\nimport android.widget.TextView\r\nimport android.widget.Toast\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.cardview.widget.CardView\r\nimport com.google.firebase.auth.FirebaseAuth\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n\r\n    private lateinit var auth: FirebaseAuth\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_main)\r\n\r\n        auth = FirebaseAuth.getInstance()\r\n\r\n        // Check if user is logged in\r\n        val currentUser = auth.currentUser\r\n        if (currentUser == null) {\r\n            // Not logged in, go to login\r\n            startActivity(Intent(this, LoginActivity::class.java))\r\n            finish()\r\n            return\r\n        }\r\n\r\n        // Initialize views\r\n        val tvWelcome = findViewById<TextView>(R.id.tvWelcome)\r\n        val btnLogout = findViewById<Button>(R.id.btnLogout)\r\n        val cardBrowseTeachers = findViewById<CardView>(R.id.cardBrowseTeachers)\r\n        val cardBrowseCourses = findViewById<CardView>(R.id.cardBrowseCourses)\r\n        val cardMyReviews = findViewById<CardView>(R.id.cardMyReviews)\r\n        val cardAddReview = findViewById<CardView>(R.id.cardAddReview)\r\n\r\n        // Update welcome message\r\n        tvWelcome.text = \"Welcome, ${currentUser.email}!\"\r\n\r\n        // Logout button\r\n        btnLogout.setOnClickListener {\r\n            auth.signOut()\r\n            Toast.makeText(this, \"Logged out successfully\", Toast.LENGTH_SHORT).show()\r\n            startActivity(Intent(this, LoginActivity::class.java))\r\n            finish()\r\n        }\r\n\r\n        // Card click listeners (you can implement these features later)\r\n        cardBrowseTeachers.setOnClickListener {\r\n            Toast.makeText(this, \"Browse Teachers feature coming soon!\", Toast.LENGTH_SHORT).show()\r\n        }\r\n\r\n        cardBrowseCourses.setOnClickListener {\r\n            Toast.makeText(this, \"Browse Courses feature coming soon!\", Toast.LENGTH_SHORT).show()\r\n        }\r\n\r\n        cardMyReviews.setOnClickListener {\r\n            Toast.makeText(this, \"My Reviews feature coming soon!\", Toast.LENGTH_SHORT).show()\r\n        }\r\n\r\n        cardAddReview.setOnClickListener {\r\n            Toast.makeText(this, \"Add Review feature coming soon!\", Toast.LENGTH_SHORT).show()\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/MainActivity.kt b/app/src/main/java/com/example/teachercoursereview/MainActivity.kt
+--- a/app/src/main/java/com/example/teachercoursereview/MainActivity.kt	(revision 999f474439c49e6b859db4b777874970507d2fc7)
++++ b/app/src/main/java/com/example/teachercoursereview/MainActivity.kt	(date 1759656004300)
+@@ -2,6 +2,7 @@
+ 
+ import android.content.Intent
+ import android.os.Bundle
++import android.util.Log
+ import android.widget.Button
+ import android.widget.TextView
+ import android.widget.Toast
+@@ -11,57 +12,63 @@
+ 
+ class MainActivity : AppCompatActivity() {
+ 
+-    private lateinit var auth: FirebaseAuth
++    private lateinit var firebaseAuth: FirebaseAuth
+ 
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
+ 
+-        auth = FirebaseAuth.getInstance()
++        firebaseAuth = FirebaseAuth.getInstance()
+ 
+-        // Check if user is logged in
+-        val currentUser = auth.currentUser
+-        if (currentUser == null) {
+-            // Not logged in, go to login
++        checkIfUserLoggedIn()
++        setupDashboardUI()
++    }
++
++    private fun checkIfUserLoggedIn() {
++        val user = firebaseAuth.currentUser
++        if (user == null) {
+             startActivity(Intent(this, LoginActivity::class.java))
+             finish()
+             return
+         }
++    }
+ 
+-        // Initialize views
+-        val tvWelcome = findViewById<TextView>(R.id.tvWelcome)
+-        val btnLogout = findViewById<Button>(R.id.btnLogout)
+-        val cardBrowseTeachers = findViewById<CardView>(R.id.cardBrowseTeachers)
+-        val cardBrowseCourses = findViewById<CardView>(R.id.cardBrowseCourses)
+-        val cardMyReviews = findViewById<CardView>(R.id.cardMyReviews)
+-        val cardAddReview = findViewById<CardView>(R.id.cardAddReview)
++    private fun setupDashboardUI() {
++        val welcomeText = findViewById<TextView>(R.id.tvWelcome)
++        val logoutBtn = findViewById<Button>(R.id.btnLogout)
++        val teachersCard = findViewById<CardView>(R.id.cardBrowseTeachers)
++        val coursesCard = findViewById<CardView>(R.id.cardBrowseCourses)
++        val myReviewsCard = findViewById<CardView>(R.id.cardMyReviews)
++        val addReviewCard = findViewById<CardView>(R.id.cardAddReview)
+ 
+-        // Update welcome message
+-        tvWelcome.text = "Welcome, ${currentUser.email}!"
++        val currentUser = firebaseAuth.currentUser
++        welcomeText.text = "Welcome, ${currentUser?.email}!"
+ 
+-        // Logout button
+-        btnLogout.setOnClickListener {
+-            auth.signOut()
++        logoutBtn.setOnClickListener {
++            firebaseAuth.signOut()
+             Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+             startActivity(Intent(this, LoginActivity::class.java))
+             finish()
+         }
+ 
+-        // Card click listeners (you can implement these features later)
+-        cardBrowseTeachers.setOnClickListener {
+-            Toast.makeText(this, "Browse Teachers feature coming soon!", Toast.LENGTH_SHORT).show()
++        teachersCard.setOnClickListener {
++            startActivity(Intent(this, BrowseTeachersActivity::class.java))
+         }
+ 
+-        cardBrowseCourses.setOnClickListener {
+-            Toast.makeText(this, "Browse Courses feature coming soon!", Toast.LENGTH_SHORT).show()
++        coursesCard.setOnClickListener {
++            showComingSoonMessage("Browse Courses")
+         }
+ 
+-        cardMyReviews.setOnClickListener {
+-            Toast.makeText(this, "My Reviews feature coming soon!", Toast.LENGTH_SHORT).show()
++        myReviewsCard.setOnClickListener {
++            showComingSoonMessage("My Reviews")
+         }
+ 
+-        cardAddReview.setOnClickListener {
+-            Toast.makeText(this, "Add Review feature coming soon!", Toast.LENGTH_SHORT).show()
++        addReviewCard.setOnClickListener {
++            showComingSoonMessage("Add Review")
+         }
+     }
++
++    private fun showComingSoonMessage(featureName: String) {
++        Toast.makeText(this, "$featureName feature coming soon!", Toast.LENGTH_SHORT).show()
++    }
+ }
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'com.android.application'\r\n    id 'org.jetbrains.kotlin.android'\r\n    id 'com.google.gms.google-services'\r\n}\r\n\r\nandroid {\r\n    namespace 'com.example.teachercoursereview'\r\n    compileSdk 33\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.teachercoursereview\"\r\n        minSdk 21\r\n        targetSdk 28\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n\r\n    compileOptions {\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n\r\n    kotlinOptions {\r\n        jvmTarget = '1.8'\r\n    }\r\n\r\n    buildFeatures {\r\n        viewBinding true\r\n    }\r\n}\r\n\r\ndependencies {\r\n    // Firebase BOM - WORKING VERSION for API 28\r\n    implementation platform('com.google.firebase:firebase-bom:30.5.0')\r\n\r\n    // Firebase services\r\n    implementation 'com.google.firebase:firebase-auth'\r\n    implementation 'com.google.firebase:firebase-database'\r\n    implementation 'com.google.firebase:firebase-analytics'\r\n\r\n    // Core Android libraries - GUARANTEED AVAILABLE VERSIONS\r\n    implementation 'androidx.core:core-ktx:1.7.0'\r\n    implementation 'androidx.appcompat:appcompat:1.4.2'\r\n    implementation 'com.google.android.material:material:1.6.1'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'\r\n    implementation 'androidx.recyclerview:recyclerview:1.2.1'\r\n\r\n    // Activity and Fragment support\r\n    implementation 'androidx.activity:activity-ktx:1.4.0'\r\n    implementation 'androidx.fragment:fragment-ktx:1.4.1'\r\n\r\n    // Testing\r\n    testImplementation 'junit:junit:4.13.2'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.3'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision 999f474439c49e6b859db4b777874970507d2fc7)
++++ b/app/build.gradle	(date 1762183791948)
+@@ -57,6 +57,8 @@
+     // Activity and Fragment support
+     implementation 'androidx.activity:activity-ktx:1.4.0'
+     implementation 'androidx.fragment:fragment-ktx:1.4.1'
++// TensorFlow Lite runtime
++    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+ 
+     // Testing
+     testImplementation 'junit:junit:4.13.2'
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.AppCompat.DayNight\"\r\n        android:usesCleartextTraffic=\"true\"\r\n        tools:targetApi=\"28\">\r\n\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n\r\n        <activity\r\n            android:name=\".LoginActivity\"\r\n            android:exported=\"false\" />\r\n\r\n        <activity\r\n            android:name=\".RegisterActivity\"\r\n            android:exported=\"false\" />\r\n\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 999f474439c49e6b859db4b777874970507d2fc7)
++++ b/app/src/main/AndroidManifest.xml	(date 1759655231478)
+@@ -25,12 +25,20 @@
+         </activity>
+ 
+         <activity
++
+             android:name=".LoginActivity"
+             android:exported="false" />
+ 
+         <activity
+             android:name=".RegisterActivity"
+             android:exported="false" />
++        <activity
++            android:name=".TeacherDetailsActivity"
++            android:exported="false" />
++        <activity
++            android:name=".BrowseTeachersActivity"
++            android:exported="false" />
++
+ 
+     </application>
+ 
+Index: app/src/main/res/layout/item_review.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/item_review.xml b/app/src/main/res/layout/item_review.xml
+new file mode 100644
+--- /dev/null	(date 1762184503443)
++++ b/app/src/main/res/layout/item_review.xml	(date 1762184503443)
+@@ -0,0 +1,52 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:orientation="vertical"
++    android:padding="12dp"
++    android:layout_margin="8dp"
++    android:background="@drawable/review_card_bg"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content">
++
++    <TextView
++        android:id="@+id/tvReviewer"
++        android:text="User: Anonymous"
++        android:textStyle="bold"
++        android:textSize="16sp"
++        android:textColor="#000000"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content" />
++
++    <RatingBar
++        android:id="@+id/ratingBarReview"
++        android:numStars="5"
++        android:stepSize="0.5"
++        android:isIndicator="true"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content" />
++
++    <TextView
++        android:id="@+id/tvReviewText"
++        android:text="Sample review text goes here."
++        android:textSize="15sp"
++        android:layout_marginTop="4dp"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content" />
++
++    <TextView
++        android:id="@+id/tvSentiment"
++        android:text="Sentiment: Neutral"
++        android:textSize="14sp"
++        android:layout_marginTop="4dp"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content" />
++
++    <TextView
++        android:id="@+id/tvTimestamp"
++        android:text="12 Oct 2025"
++        android:textSize="13sp"
++        android:textColor="#6D6D6D"
++        android:layout_marginTop="4dp"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content" />
++
++</LinearLayout>
+Index: app/src/main/java/com/example/teachercoursereview/Review.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/Review.kt b/app/src/main/java/com/example/teachercoursereview/Review.kt
+new file mode 100644
+--- /dev/null	(date 1762184177232)
++++ b/app/src/main/java/com/example/teachercoursereview/Review.kt	(date 1762184177232)
+@@ -0,0 +1,11 @@
++package com.example.teachercoursereview
++
++data class Review(
++    var id: String = "",
++    var teacherId: String = "",
++    var userId: String = "",
++    var text: String = "",
++    var rating: Float = 0f,
++    var sentiment: String = "Neutral",
++    var timestamp: Long = 0
++)
+Index: app/src/main/res/layout/activity_browse_teachers.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_browse_teachers.xml b/app/src/main/res/layout/activity_browse_teachers.xml
+new file mode 100644
+--- /dev/null	(date 1759656085638)
++++ b/app/src/main/res/layout/activity_browse_teachers.xml	(date 1759656085638)
+@@ -0,0 +1,69 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:orientation="vertical"
++    android:padding="16dp"
++    android:background="#F5F5F5">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="horizontal"
++        android:gravity="center_vertical"
++        android:layout_marginBottom="20dp"
++        android:padding="16dp"
++        android:background="#2E7D32"
++        android:elevation="4dp">
++
++        <TextView
++            android:layout_width="0dp"
++            android:layout_height="wrap_content"
++            android:layout_weight="1"
++            android:text="Browse Teachers"
++            android:textSize="20sp"
++            android:textStyle="bold"
++            android:textColor="@android:color/white" />
++
++        <Button
++            android:id="@+id/btnBack"
++            android:layout_width="wrap_content"
++            android:layout_height="36dp"
++            android:text="Back"
++            android:textSize="12sp"
++            android:backgroundTint="#4CAF50"
++            android:textColor="@android:color/white" />
++
++    </LinearLayout>
++
++    <com.google.android.material.textfield.TextInputLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginBottom="16dp">
++
++        <com.google.android.material.textfield.TextInputEditText
++            android:id="@+id/etSearch"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:hint="Search teachers..."
++            android:inputType="text" />
++
++    </com.google.android.material.textfield.TextInputLayout>
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/recyclerViewTeachers"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_weight="1"
++        android:scrollbars="vertical" />
++
++    <com.google.android.material.floatingactionbutton.FloatingActionButton
++        android:id="@+id/fabAddTeacher"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_gravity="bottom|end"
++        android:layout_margin="16dp"
++        android:src="@android:drawable/ic_input_add"
++        android:backgroundTint="#2E7D32" />
++
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/teachercoursereview/ReviewAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/ReviewAdapter.kt b/app/src/main/java/com/example/teachercoursereview/ReviewAdapter.kt
+new file mode 100644
+--- /dev/null	(date 1762184483933)
++++ b/app/src/main/java/com/example/teachercoursereview/ReviewAdapter.kt	(date 1762184483933)
+@@ -0,0 +1,45 @@
++package com.example.teachercoursereview
++
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.RatingBar
++import android.widget.TextView
++import androidx.recyclerview.widget.RecyclerView
++
++class ReviewAdapter(private val reviewList: List<Review>) :
++    RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
++
++    inner class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
++        val tvReviewer: TextView = itemView.findViewById(R.id.tvReviewer)
++        val tvReviewText: TextView = itemView.findViewById(R.id.tvReviewText)
++        val tvSentiment: TextView = itemView.findViewById(R.id.tvSentiment)
++        val tvTimestamp: TextView = itemView.findViewById(R.id.tvTimestamp)
++        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBarReview)
++    }
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
++        val view = LayoutInflater.from(parent.context)
++            .inflate(R.layout.item_review, parent, false)
++        return ReviewViewHolder(view)
++    }
++
++    override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
++        val review = reviewList[position]
++
++        holder.tvReviewer.text = if (review.userId.isNotEmpty()) "User: ${review.userId}" else "Anonymous"
++        holder.tvReviewText.text = review.text
++        holder.tvSentiment.text = "Sentiment: ${review.sentiment}"
++        holder.ratingBar.rating = review.rating
++        holder.tvTimestamp.text = android.text.format.DateFormat.format("dd MMM yyyy", review.timestamp)
++
++        // Optional color coding for sentiment
++        when (review.sentiment.lowercase()) {
++            "positive" -> holder.tvSentiment.setTextColor(android.graphics.Color.parseColor("#2E7D32")) // green
++            "negative" -> holder.tvSentiment.setTextColor(android.graphics.Color.parseColor("#C62828")) // red
++            else -> holder.tvSentiment.setTextColor(android.graphics.Color.parseColor("#6D6D6D")) // gray
++        }
++    }
++
++    override fun getItemCount(): Int = reviewList.size
++}
+Index: app/src/main/res/drawable/review_card_bg.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/review_card_bg.xml b/app/src/main/res/drawable/review_card_bg.xml
+new file mode 100644
+--- /dev/null	(date 1762184658168)
++++ b/app/src/main/res/drawable/review_card_bg.xml	(date 1762184658168)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android"
++    android:shape="rectangle">
++    <solid android:color="#FFFFFF" />
++    <corners android:radius="8dp" />
++    <stroke android:width="1dp" android:color="#E0E0E0" />
++    <padding
++        android:left="8dp"
++        android:top="8dp"
++        android:right="8dp"
++        android:bottom="8dp" />
++</shape>
+Index: app/src/main/res/layout/activity_write_review.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_write_review.xml b/app/src/main/res/layout/activity_write_review.xml
+new file mode 100644
+--- /dev/null	(date 1762184141187)
++++ b/app/src/main/res/layout/activity_write_review.xml	(date 1762184141187)
+@@ -0,0 +1,42 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:orientation="vertical"
++    android:padding="24dp"
++    android:gravity="center_horizontal"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <TextView
++        android:id="@+id/tvTeacherName"
++        android:text="Write a Review"
++        android:textSize="22sp"
++        android:textStyle="bold"
++        android:layout_marginBottom="16dp"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content" />
++
++    <RatingBar
++        android:id="@+id/ratingBar"
++        android:numStars="5"
++        android:stepSize="1"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content" />
++
++    <EditText
++        android:id="@+id/etReview"
++        android:hint="Enter your review here"
++        android:inputType="textMultiLine"
++        android:minLines="4"
++        android:maxLines="6"
++        android:layout_marginTop="16dp"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content" />
++
++    <Button
++        android:id="@+id/btnSubmit"
++        android:text="Submit Review"
++        android:layout_marginTop="20dp"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content" />
++
++</LinearLayout>
+Index: app/src/main/java/com/example/teachercoursereview/BrowseTeacherActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/BrowseTeacherActivity.kt b/app/src/main/java/com/example/teachercoursereview/BrowseTeacherActivity.kt
+new file mode 100644
+--- /dev/null	(date 1759656247510)
++++ b/app/src/main/java/com/example/teachercoursereview/BrowseTeacherActivity.kt	(date 1759656247510)
+@@ -0,0 +1,85 @@
++package com.example.teachercoursereview
++
++import android.content.Intent
++import android.os.Bundle
++import android.util.Log
++import android.widget.Button
++import android.widget.Toast
++import androidx.appcompat.app.AppCompatActivity
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.RecyclerView
++import com.google.android.material.textfield.TextInputEditText
++import com.google.firebase.database.*
++
++class BrowseTeachersActivity : AppCompatActivity() {
++
++    private lateinit var recyclerView: RecyclerView
++    private lateinit var teacherAdapter: TeacherAdapter
++    private lateinit var teachersList: MutableList<Teacher>
++    private lateinit var firebaseDB: DatabaseReference
++    private lateinit var searchBox: TextInputEditText
++
++    override fun onCreate(savedInstanceState: Bundle?) {
++        super.onCreate(savedInstanceState)
++        setContentView(R.layout.activity_browse_teachers)
++
++        setupViews()
++        setupRecyclerView()
++        setupFirebaseConnection()
++        loadTeachersFromDB()
++
++        findViewById<Button>(R.id.btnBack).setOnClickListener {
++            finish()
++        }
++
++        findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabAddTeacher).setOnClickListener {
++            Toast.makeText(this, "Add teacher feature coming soon!", Toast.LENGTH_SHORT).show()
++        }
++    }
++
++    private fun setupViews() {
++        recyclerView = findViewById(R.id.recyclerViewTeachers)
++        searchBox = findViewById(R.id.etSearch)
++        teachersList = mutableListOf()
++    }
++
++    private fun setupRecyclerView() {
++        teacherAdapter = TeacherAdapter(teachersList) { selectedTeacher ->
++            val detailsIntent = Intent(this, TeacherDetailsActivity::class.java)
++            detailsIntent.putExtra("teacherId", selectedTeacher.id)
++            detailsIntent.putExtra("teacherName", selectedTeacher.name)
++            startActivity(detailsIntent)
++        }
++
++        recyclerView.layoutManager = LinearLayoutManager(this)
++        recyclerView.adapter = teacherAdapter
++    }
++
++    private fun setupFirebaseConnection() {
++        firebaseDB = FirebaseDatabase.getInstance().reference.child("teachers")
++    }
++
++    private fun loadTeachersFromDB() {
++        firebaseDB.addValueEventListener(object : ValueEventListener {
++            override fun onDataChange(dataSnapshot: DataSnapshot) {
++                teachersList.clear()
++
++                for (snapshot in dataSnapshot.children) {
++                    val teacherData = snapshot.getValue(Teacher::class.java)
++                    teacherData?.let { teacher ->
++                        teacher.id = snapshot.key ?: ""
++                        teachersList.add(teacher)
++                    }
++                }
++
++                teacherAdapter.notifyDataSetChanged()
++                Log.d("BROWSE_TEACHERS", "Loaded ${teachersList.size} teachers")
++            }
++
++            override fun onCancelled(dbError: DatabaseError) {
++                Toast.makeText(this@BrowseTeachersActivity, "Failed to load teachers", Toast.LENGTH_SHORT).show()
++                Log.e("BROWSE_TEACHERS", "Database error: ${dbError.message}")
++            }
++        })
++    }
++}
+\ No newline at end of file
+Index: app/src/main/res/layout/item_teacher.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/item_teacher.xml b/app/src/main/res/layout/item_teacher.xml
+new file mode 100644
+--- /dev/null	(date 1759656173575)
++++ b/app/src/main/res/layout/item_teacher.xml	(date 1759656173575)
+@@ -0,0 +1,91 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:layout_margin="8dp"
++    android:elevation="6dp"
++    android:radius="12dp">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical"
++        android:padding="16dp">
++
++        <TextView
++            android:id="@+id/tvTeacherName"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="Dr. John Smith"
++            android:textSize="18sp"
++            android:textStyle="bold"
++            android:textColor="#2E7D32"
++            android:layout_marginBottom="4dp" />
++
++        <TextView
++            android:id="@+id/tvDepartment"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="Computer Science"
++            android:textSize="14sp"
++            android:textColor="#666666"
++            android:layout_marginBottom="10dp" />
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:gravity="center_vertical"
++            android:layout_marginBottom="8dp">
++
++            <TextView
++                android:id="@+id/tvRating"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:text="4.5"
++                android:textSize="16sp"
++                android:textStyle="bold"
++                android:textColor="#FF9800"
++                android:layout_marginEnd="4dp" />
++
++            <TextView
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:text="★"
++                android:textSize="16sp"
++                android:textColor="#FF9800"
++                android:layout_marginEnd="8dp" />
++
++            <TextView
++                android:id="@+id/tvReviewCount"
++                android:layout_width="0dp"
++                android:layout_height="wrap_content"
++                android:layout_weight="1"
++                android:text="(23 reviews)"
++                android:textSize="12sp"
++                android:textColor="#888888" />
++
++            <Button
++                android:id="@+id/btnViewReviews"
++                android:layout_width="wrap_content"
++                android:layout_height="32dp"
++                android:text="View Reviews"
++                android:textSize="10sp"
++                android:backgroundTint="#4CAF50"
++                android:textColor="@android:color/white" />
++
++        </LinearLayout>
++
++        <TextView
++            android:id="@+id/tvCourses"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="Courses: Data Structures, Algorithms, Machine Learning"
++            android:textSize="12sp"
++            android:textColor="#666666"
++            android:maxLines="2"
++            android:ellipsize="end" />
++
++    </LinearLayout>
++
++</androidx.cardview.widget.CardView>
+\ No newline at end of file
+Index: app/src/main/java/com/example/teachercoursereview/TeacherAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/TeacherAdapter.kt b/app/src/main/java/com/example/teachercoursereview/TeacherAdapter.kt
+new file mode 100644
+--- /dev/null	(date 1759654585930)
++++ b/app/src/main/java/com/example/teachercoursereview/TeacherAdapter.kt	(date 1759654585930)
+@@ -0,0 +1,49 @@
++package com.example.teachercoursereview
++
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.Button
++import android.widget.TextView
++import androidx.recyclerview.widget.RecyclerView
++
++class TeacherAdapter(
++    private val teachers: List<Teacher>,
++    private val onTeacherClick: (Teacher) -> Unit
++) : RecyclerView.Adapter<TeacherAdapter.TeacherViewHolder>() {
++
++    class TeacherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
++        val tvName: TextView = view.findViewById(R.id.tvTeacherName)
++        val tvDepartment: TextView = view.findViewById(R.id.tvDepartment)
++        val tvRating: TextView = view.findViewById(R.id.tvRating)
++        val tvReviewCount: TextView = view.findViewById(R.id.tvReviewCount)
++        val tvCourses: TextView = view.findViewById(R.id.tvCourses)
++        val btnViewReviews: Button = view.findViewById(R.id.btnViewReviews)
++    }
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeacherViewHolder {
++        val view = LayoutInflater.from(parent.context)
++            .inflate(R.layout.item_teacher, parent, false)
++        return TeacherViewHolder(view)
++    }
++
++    override fun onBindViewHolder(holder: TeacherViewHolder, position: Int) {
++        val teacher = teachers[position]
++
++        holder.tvName.text = teacher.name
++        holder.tvDepartment.text = teacher.department
++        holder.tvRating.text = String.format("%.1f", teacher.rating)
++        holder.tvReviewCount.text = "(${teacher.reviewCount} reviews)"
++        holder.tvCourses.text = "Courses: ${teacher.courses.joinToString(", ")}"
++
++        holder.btnViewReviews.setOnClickListener {
++            onTeacherClick(teacher)
++        }
++
++        holder.itemView.setOnClickListener {
++            onTeacherClick(teacher)
++        }
++    }
++
++    override fun getItemCount() = teachers.size
++}
+Index: app/src/main/java/com/example/teachercoursereview/Teacher.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/Teacher.kt b/app/src/main/java/com/example/teachercoursereview/Teacher.kt
+new file mode 100644
+--- /dev/null	(date 1759654561112)
++++ b/app/src/main/java/com/example/teachercoursereview/Teacher.kt	(date 1759654561112)
+@@ -0,0 +1,11 @@
++package com.example.teachercoursereview
++
++data class Teacher(
++    var id: String = "",
++    var name: String = "",
++    var department: String = "",
++    var email: String = "",
++    var courses: List<String> = emptyList(),
++    var rating: Double = 0.0,
++    var reviewCount: Int = 0
++)
+Index: app/src/main/java/com/example/teachercoursereview/TeacherDetailsActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/TeacherDetailsActivity.kt b/app/src/main/java/com/example/teachercoursereview/TeacherDetailsActivity.kt
+new file mode 100644
+--- /dev/null	(date 1762183636256)
++++ b/app/src/main/java/com/example/teachercoursereview/TeacherDetailsActivity.kt	(date 1762183636256)
+@@ -0,0 +1,140 @@
++package com.example.teachercoursereview
++
++import android.content.Intent
++import android.os.Bundle
++import android.util.Log
++import android.widget.Button
++import android.widget.TextView
++import android.widget.Toast
++import androidx.appcompat.app.AppCompatActivity
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.RecyclerView
++import com.google.firebase.database.*
++
++class TeacherDetailsActivity : AppCompatActivity() {
++
++    private lateinit var firebaseDB: DatabaseReference
++    private lateinit var reviewsRecyclerView: RecyclerView
++    private lateinit var reviewAdapter: ReviewAdapter
++    private lateinit var reviewsList: MutableList<Review>
++
++    private lateinit var nameText: TextView
++    private lateinit var deptText: TextView
++    private lateinit var ratingText: TextView
++    private lateinit var reviewCountText: TextView
++    private lateinit var emailText: TextView
++    private lateinit var coursesText: TextView
++    private lateinit var noReviewsText: TextView
++
++    private var teacherId: String = ""
++    private var teacherName: String = ""
++
++    override fun onCreate(savedInstanceState: Bundle?) {
++        super.onCreate(savedInstanceState)
++        setContentView(R.layout.activity_teacher_details)
++
++        teacherId = intent.getStringExtra("teacherId") ?: ""
++        teacherName = intent.getStringExtra("teacherName") ?: ""
++
++        setupViews()
++        setupReviewsList()
++        connectFirebase()
++        loadTeacherData()
++        loadReviewsData()
++
++        findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
++
++        findViewById<Button>(R.id.btnWriteReview).setOnClickListener {
++            val intent = Intent(this, WriteReviewActivity::class.java)
++            intent.putExtra("teacherId", teacherId)
++            intent.putExtra("teacherName", teacherName)
++            startActivity(intent)
++        }
++
++        findViewById<Button>(R.id.btnViewCourses).setOnClickListener {
++            Toast.makeText(this, "View Courses feature coming soon!", Toast.LENGTH_SHORT).show()
++        }
++    }
++
++    private fun setupViews() {
++        nameText = findViewById(R.id.tvTeacherName)
++        deptText = findViewById(R.id.tvDepartment)
++        ratingText = findViewById(R.id.tvRating)
++        reviewCountText = findViewById(R.id.tvReviewCount)
++        emailText = findViewById(R.id.tvEmail)
++        coursesText = findViewById(R.id.tvCourses)
++        noReviewsText = findViewById(R.id.tvNoReviews)
++        reviewsRecyclerView = findViewById(R.id.recyclerViewReviews)
++        reviewsList = mutableListOf()
++    }
++
++    private fun setupReviewsList() {
++        reviewAdapter = ReviewAdapter(reviewsList)
++        reviewsRecyclerView.layoutManager = LinearLayoutManager(this)
++        reviewsRecyclerView.adapter = reviewAdapter
++        reviewsRecyclerView.isNestedScrollingEnabled = false
++    }
++
++    private fun connectFirebase() {
++        firebaseDB = FirebaseDatabase.getInstance().reference
++    }
++
++    private fun loadTeacherData() {
++        if (teacherId.isEmpty()) return
++
++        firebaseDB.child("teachers").child(teacherId)
++            .addValueEventListener(object : ValueEventListener {
++                override fun onDataChange(snapshot: DataSnapshot) {
++                    val teacherData = snapshot.getValue(Teacher::class.java)
++                    teacherData?.let { displayTeacherInfo(it) }
++                }
++
++                override fun onCancelled(error: DatabaseError) {
++                    Toast.makeText(this@TeacherDetailsActivity, "Error loading teacher details", Toast.LENGTH_SHORT).show()
++                    Log.e("TEACHER_DETAILS", "Error: ${error.message}")
++                }
++            })
++    }
++
++    private fun displayTeacherInfo(teacher: Teacher) {
++        nameText.text = teacher.name
++        deptText.text = teacher.department
++        ratingText.text = String.format("%.1f", teacher.rating)
++        reviewCountText.text = "(${teacher.reviewCount} reviews)"
++        emailText.text = teacher.email
++        coursesText.text = teacher.courses.joinToString(", ")
++    }
++
++    private fun loadReviewsData() {
++        if (teacherId.isEmpty()) return
++
++        firebaseDB.child("reviews").child(teacherId)
++            .addValueEventListener(object : ValueEventListener {
++                override fun onDataChange(snapshot: DataSnapshot) {
++                    reviewsList.clear()
++                    for (reviewSnap in snapshot.children) {
++                        val r = reviewSnap.getValue(Review::class.java)
++                        r?.let { reviewsList.add(it) }
++                    }
++                    if (reviewsList.isEmpty()) {
++                        noReviewsText.visibility = android.view.View.VISIBLE
++                        reviewsRecyclerView.visibility = android.view.View.GONE
++                    } else {
++                        noReviewsText.visibility = android.view.View.GONE
++                        reviewsRecyclerView.visibility = android.view.View.VISIBLE
++                    }
++                    reviewAdapter.notifyDataSetChanged()
++                }
++
++                override fun onCancelled(error: DatabaseError) {
++                    Toast.makeText(this@TeacherDetailsActivity, "Error loading reviews", Toast.LENGTH_SHORT).show()
++                }
++            })
++    }
++
++    override fun onResume() {
++        super.onResume()
++        loadTeacherData()
++        loadReviewsData()
++    }
++}
+Index: app/src/main/java/com/example/teachercoursereview/WriteRevieweActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/teachercoursereview/WriteRevieweActivity.kt b/app/src/main/java/com/example/teachercoursereview/WriteRevieweActivity.kt
+new file mode 100644
+--- /dev/null	(date 1762183950138)
++++ b/app/src/main/java/com/example/teachercoursereview/WriteRevieweActivity.kt	(date 1762183950138)
+@@ -0,0 +1,95 @@
++package com.example.teachercoursereview
++
++import android.os.Bundle
++import android.widget.Button
++import android.widget.EditText
++import android.widget.RatingBar
++import android.widget.Toast
++import androidx.appcompat.app.AppCompatActivity
++import com.google.firebase.auth.FirebaseAuth
++import com.google.firebase.database.DatabaseReference
++import com.google.firebase.database.FirebaseDatabase
++import org.tensorflow.lite.Interpreter
++import java.nio.ByteBuffer
++import java.nio.ByteOrder
++
++class WriteReviewActivity : AppCompatActivity() {
++
++    private lateinit var firebaseDB: DatabaseReference
++    private lateinit var auth: FirebaseAuth
++
++    private lateinit var ratingBar: RatingBar
++    private lateinit var reviewInput: EditText
++    private lateinit var submitButton: Button
++
++    private lateinit var teacherId: String
++    private lateinit var teacherName: String
++
++    private var sentimentInterpreter: Interpreter? = null
++
++    override fun onCreate(savedInstanceState: Bundle?) {
++        super.onCreate(savedInstanceState)
++        setContentView(R.layout.activity_write_review)
++
++        firebaseDB = FirebaseDatabase.getInstance().reference
++        auth = FirebaseAuth.getInstance()
++
++        teacherId = intent.getStringExtra("teacherId") ?: ""
++        teacherName = intent.getStringExtra("teacherName") ?: ""
++
++        ratingBar = findViewById(R.id.ratingBar)
++        reviewInput = findViewById(R.id.etReview)
++        submitButton = findViewById(R.id.btnSubmit)
++
++        submitButton.setOnClickListener {
++            submitReview()
++        }
++    }
++
++    private fun submitReview() {
++        val reviewText = reviewInput.text.toString().trim()
++        val ratingValue = ratingBar.rating
++
++        if (reviewText.isEmpty() || ratingValue == 0f) {
++            Toast.makeText(this, "Please provide text and rating", Toast.LENGTH_SHORT).show()
++            return
++        }
++
++        val sentiment = predictSentiment(reviewText)
++        val userId = auth.currentUser?.uid ?: "anonymous"
++
++        val review = Review(
++            id = "",
++            teacherId = teacherId,
++            userId = userId,
++            text = reviewText,
++            rating = ratingValue,
++            sentiment = sentiment,
++            timestamp = System.currentTimeMillis()
++        )
++
++        firebaseDB.child("reviews").child(teacherId).push().setValue(review)
++            .addOnSuccessListener {
++                Toast.makeText(this, "Review submitted successfully!", Toast.LENGTH_SHORT).show()
++                finish()
++            }
++            .addOnFailureListener {
++                Toast.makeText(this, "Failed to submit review", Toast.LENGTH_SHORT).show()
++            }
++    }
++
++    private fun predictSentiment(text: String): String {
++        // Placeholder sentiment classification (ML model integration planned)
++        val lower = text.lowercase()
++        return when {
++            listOf("good", "great", "excellent", "nice", "amazing").any { lower.contains(it) } -> "Positive"
++            listOf("bad", "poor", "worst", "terrible", "boring").any { lower.contains(it) } -> "Negative"
++            else -> "Neutral"
++        }
++    }
++
++    override fun onDestroy() {
++        sentimentInterpreter?.close()
++        super.onDestroy()
++    }
++}
+Index: app/src/main/res/layout/activity_teacher_details.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_teacher_details.xml b/app/src/main/res/layout/activity_teacher_details.xml
+new file mode 100644
+--- /dev/null	(date 1759657478890)
++++ b/app/src/main/res/layout/activity_teacher_details.xml	(date 1759657478890)
+@@ -0,0 +1,217 @@
++<?xml version="1.0" encoding="utf-8"?>
++<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#F5F5F5">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical"
++        android:padding="16dp">
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:gravity="center_vertical"
++            android:layout_marginBottom="24dp"
++            android:padding="16dp"
++            android:background="#2E7D32"
++            android:elevation="4dp">
++
++            <TextView
++                android:layout_width="0dp"
++                android:layout_height="wrap_content"
++                android:layout_weight="1"
++                android:text="Teacher Details"
++                android:textSize="20sp"
++                android:textStyle="bold"
++                android:textColor="@android:color/white" />
++
++            <Button
++                android:id="@+id/btnBack"
++                android:layout_width="wrap_content"
++                android:layout_height="36dp"
++                android:text="Back"
++                android:textSize="12sp"
++                android:backgroundTint="#4CAF50"
++                android:textColor="@android:color/white" />
++
++        </LinearLayout>
++
++        <androidx.cardview.widget.CardView
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_marginBottom="16dp"
++            android:elevation="6dp"
++            android:radius="12dp">
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:orientation="vertical"
++                android:padding="20dp">
++
++                <TextView
++                    android:id="@+id/tvTeacherName"
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:text="Dr. John Smith"
++                    android:textSize="24sp"
++                    android:textStyle="bold"
++                    android:textColor="#2E7D32"
++                    android:layout_marginBottom="8dp" />
++
++                <TextView
++                    android:id="@+id/tvDepartment"
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:text="Computer Science Department"
++                    android:textSize="16sp"
++                    android:textColor="#666666"
++                    android:layout_marginBottom="12dp" />
++
++                <LinearLayout
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:orientation="horizontal"
++                    android:gravity="center_vertical"
++                    android:layout_marginBottom="12dp">
++
++                    <TextView
++                        android:id="@+id/tvRating"
++                        android:layout_width="wrap_content"
++                        android:layout_height="wrap_content"
++                        android:text="4.5"
++                        android:textSize="28sp"
++                        android:textStyle="bold"
++                        android:textColor="#FF9800" />
++
++                    <TextView
++                        android:layout_width="wrap_content"
++                        android:layout_height="wrap_content"
++                        android:text="★★★★★"
++                        android:textSize="20sp"
++                        android:textColor="#FF9800"
++                        android:layout_marginStart="8dp"
++                        android:layout_marginEnd="8dp" />
++
++                    <TextView
++                        android:id="@+id/tvReviewCount"
++                        android:layout_width="wrap_content"
++                        android:layout_height="wrap_content"
++                        android:text="(23 reviews)"
++                        android:textSize="14sp"
++                        android:textColor="#888888" />
++
++                </LinearLayout>
++
++                <TextView
++                    android:id="@+id/tvEmail"
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:text="john.smith@university.edu"
++                    android:textSize="14sp"
++                    android:textColor="#666666"
++                    android:layout_marginBottom="8dp" />
++
++                <TextView
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:text="Courses Taught:"
++                    android:textSize="16sp"
++                    android:textStyle="bold"
++                    android:textColor="#333333"
++                    android:layout_marginBottom="4dp" />
++
++                <TextView
++                    android:id="@+id/tvCourses"
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:text="Data Structures, Algorithms, Machine Learning, Database Systems"
++                    android:textSize="14sp"
++                    android:textColor="#666666" />
++
++            </LinearLayout>
++
++        </androidx.cardview.widget.CardView>
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:layout_marginBottom="16dp">
++
++            <Button
++                android:id="@+id/btnWriteReview"
++                android:layout_width="0dp"
++                android:layout_height="56dp"
++                android:layout_weight="1"
++                android:text="Write Review"
++                android:textStyle="bold"
++                android:backgroundTint="#2E7D32"
++                android:textColor="@android:color/white"
++                android:layout_marginEnd="8dp" />
++
++            <Button
++                android:id="@+id/btnViewCourses"
++                android:layout_width="0dp"
++                android:layout_height="56dp"
++                android:layout_weight="1"
++                android:text="View Courses"
++                android:textStyle="bold"
++                android:backgroundTint="#4CAF50"
++                android:textColor="@android:color/white"
++                android:layout_marginStart="8dp" />
++
++        </LinearLayout>
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:gravity="center_vertical"
++            android:layout_marginBottom="16dp">
++
++            <TextView
++                android:layout_width="0dp"
++                android:layout_height="wrap_content"
++                android:layout_weight="1"
++                android:text="Student Reviews"
++                android:textSize="18sp"
++                android:textStyle="bold"
++                android:textColor="#333333" />
++
++            <TextView
++                android:id="@+id/tvSortBy"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:text="Sort: Recent"
++                android:textSize="12sp"
++                android:textColor="#666666"
++                android:background="?attr/selectableItemBackground"
++                android:padding="8dp" />
++
++        </LinearLayout>
++
++        <androidx.recyclerview.widget.RecyclerView
++            android:id="@+id/recyclerViewReviews"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:nestedScrollingEnabled="false" />
++
++        <TextView
++            android:id="@+id/tvNoReviews"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:text="No reviews yet. Be the first to write a review!"
++            android:textSize="16sp"
++            android:textColor="#888888"
++            android:gravity="center"
++            android:padding="32dp"
++            android:visibility="gone" />
++
++    </LinearLayout>
++
++</ScrollView>

@@ -32,6 +32,8 @@
             android:name=".RegisterActivity"
             android:exported="false" />
 
+        <!-- The ThankYouActivity line has been removed -->
+
     </application>
 
 </manifest>
